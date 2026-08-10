@@ -4,6 +4,16 @@ A small in-process Visual Studio VSIX that automatically arranges windows belong
 
 It targets the stable Visual Studio 17.x SDK API surface. Visual Studio 2026 supports 17.x extension APIs and accepts a VSIX installation target with lower bound `17.0`, so the same extension can run in Visual Studio 2022 and Visual Studio 2026.
 
+## Plugin functionality
+
+The **Debug Window Layout** plugin helps when debugging multiple processes in Visual Studio:
+
+- When Visual Studio enters run mode, currently debugged processes are detected automatically.
+- Related windows are matched by process ID; for console windows, the extension also uses visible window title matching (fallback for `conhost/OpenConsole`).
+- Windows are arranged across monitors and zones based on rules from `.vsdebuglayout.json`.
+- If no configuration exists, an automatic grid layout is generated.
+- `Extensions > Debug Window Layout > Open Config` opens the configuration file directly in Visual Studio and stores it as formatted (beautified) JSON.
+
 ## What it does
 
 - Hooks the debugger `OnEnterRunMode` event.
@@ -43,7 +53,7 @@ In the experimental instance, open your normal multi-project solution and start 
 
 ## Usage
 
-The extension adds two Tools menu commands:
+The extension adds two commands in a dedicated submenu under **Extensions**:
 
 - `Debug Window Layout: Arrange Now`
 - `Debug Window Layout: Open Config`
@@ -58,9 +68,11 @@ If `.vsdebuglayout.json` doesn't exist, all matched debug windows are arranged a
 
 Start your four processes, then choose:
 
-`Tools > Debug Window Layout: Open Config`
+`Extensions > Debug Window Layout > Open Config`
 
 If the config file doesn't exist yet, it is generated from the processes currently being debugged. The generated rules are assigned to a grid automatically.
+
+`Open Config` opens `.vsdebuglayout.json` directly inside Visual Studio. The file content is stored in formatted (beautified) JSON for easier editing.
 
 ## Recommended console setup
 
