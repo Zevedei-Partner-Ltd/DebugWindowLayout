@@ -1,0 +1,32 @@
+{
+  "enabled": true,
+  "autoArrangeOnDebug": true,
+  "targetMonitor": 2,
+  "margin": 8,
+  "retryMilliseconds": 300,
+  "retryCount": 20,
+  "useWorkingArea": true,
+  "restoreBeforeMove": true,
+  "rules": [
+    {
+      "process": "Gateway",
+      "titleContains": "Gateway",
+      "zone": "TopLeft"
+    },
+    {
+      "process": "OrderService",
+      "titleContains": "OrderService",
+      "zone": "TopRight"
+    },
+    {
+      "process": "PaymentService",
+      "titleContains": "PaymentService",
+      "zone": "BottomLeft"
+    },
+    {
+      "process": "Worker",
+      "titleContains": "Worker",
+      "zone": "BottomRight"
+    }
+  ]
+}

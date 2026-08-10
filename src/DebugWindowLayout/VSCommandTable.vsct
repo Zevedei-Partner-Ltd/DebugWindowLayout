@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable">
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+
+  <Commands package="guidDebugWindowLayoutPackage">
+	<Menus>
+	  <!-- Dedicated "Debug Window Layout" submenu directly under the main "Extensions" menu -->
+	  <Menu guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" priority="0x0600" type="Menu">
+		<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+		<Strings>
+		  <ButtonText>Debug Window Layout</ButtonText>
+		  <CommandName>Debug Window Layout</CommandName>
+		</Strings>
+	  </Menu>
+	</Menus>
+
+	<Groups>
+	  <!-- Group inside the submenu that contains the commands -->
+	  <Group guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" priority="0x0100">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" />
+	  </Group>
+	</Groups>
+
+	<Buttons>
+	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidArrangeNow" priority="0x0100" type="Button">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Strings>
+		  <ButtonText>Arrange Now</ButtonText>
+		  <LocCanonicalName>.Extensions.DebugWindowLayout.ArrangeNow</LocCanonicalName>
+		</Strings>
+	  </Button>
+	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenConfig" priority="0x0200" type="Button">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Strings>
+		  <ButtonText>Open Config</ButtonText>
+		  <LocCanonicalName>.Extensions.DebugWindowLayout.OpenConfig</LocCanonicalName>
+		</Strings>
+	  </Button>
+	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenOptions" priority="0x0300" type="Button">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Strings>
+		  <ButtonText>Options...</ButtonText>
+		  <LocCanonicalName>.Extensions.DebugWindowLayout.Options</LocCanonicalName>
+		</Strings>
+	  </Button>
+	</Buttons>
+  </Commands>
+
+  <Symbols>
+	<GuidSymbol name="guidDebugWindowLayoutPackage" value="{5B706A35-5BB7-4B56-B3B0-07C7B9FBC61E}" />
+	<GuidSymbol name="guidDebugWindowLayoutCmdSet" value="{C2D36C87-3563-4F88-BEC1-8F4154B79F47}">
+	  <IDSymbol name="DebugWindowLayoutSubMenu" value="0x1015" />
+	  <IDSymbol name="DebugWindowLayoutGroup" value="0x1020" />
+	  <IDSymbol name="cmdidArrangeNow" value="0x0100" />
+	  <IDSymbol name="cmdidOpenConfig" value="0x0101" />
+	  <IDSymbol name="cmdidOpenOptions" value="0x0102" />
+	</GuidSymbol>
+  </Symbols>
+</CommandTable>
