@@ -8,6 +8,7 @@
 	  <!-- Dedicated "Debug Window Layout" submenu directly under the main "Extensions" menu -->
 	  <Menu guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" priority="0x0600" type="Menu">
 		<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
 		<Strings>
 		  <ButtonText>Debug Window Layout</ButtonText>
 		  <CommandName>Debug Window Layout</CommandName>
@@ -25,6 +26,7 @@
 	<Buttons>
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidArrangeNow" priority="0x0100" type="Button">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
 		<Strings>
 		  <ButtonText>Arrange Now</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.ArrangeNow</LocCanonicalName>
@@ -32,6 +34,7 @@
 	  </Button>
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenConfig" priority="0x0200" type="Button">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
 		<Strings>
 		  <ButtonText>Open Config</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.OpenConfig</LocCanonicalName>
@@ -39,12 +42,17 @@
 	  </Button>
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenOptions" priority="0x0300" type="Button">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
 		<Strings>
 		  <ButtonText>Options...</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.Options</LocCanonicalName>
 		</Strings>
 	  </Button>
 	</Buttons>
+
+	<Bitmaps>
+	  <Bitmap guid="guidDebugWindowLayoutImages" href="Resources\Icon_Generated.png" usedList="bmpDebugWindowLayoutIcon" />
+	</Bitmaps>
   </Commands>
 
   <Symbols>
@@ -55,6 +63,9 @@
 	  <IDSymbol name="cmdidArrangeNow" value="0x0100" />
 	  <IDSymbol name="cmdidOpenConfig" value="0x0101" />
 	  <IDSymbol name="cmdidOpenOptions" value="0x0102" />
+	</GuidSymbol>
+	<GuidSymbol name="guidDebugWindowLayoutImages" value="{3E605A88-E8DD-4E1A-9ED2-2478A5D7F6AD}">
+	  <IDSymbol name="bmpDebugWindowLayoutIcon" value="1" />
 	</GuidSymbol>
   </Symbols>
 </CommandTable>
