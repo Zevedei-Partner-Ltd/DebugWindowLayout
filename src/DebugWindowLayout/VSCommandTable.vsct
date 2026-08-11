@@ -8,7 +8,7 @@
 	  <!-- Dedicated "Debug Window Layout" submenu directly under the main "Extensions" menu -->
 	  <Menu guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" priority="0x0600" type="Menu">
 		<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
-		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
+		<!--<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />-->
 		<Strings>
 		  <ButtonText>Debug Window Layout</ButtonText>
 		  <CommandName>Debug Window Layout</CommandName>
@@ -21,28 +21,33 @@
 	  <Group guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" priority="0x0100">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" />
 	  </Group>
+	  <!-- Second group; a separator is rendered between it and the previous group -->
+	  <Group guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutConfigGroup" priority="0x0200">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutSubMenu" />
+	  </Group>
 	</Groups>
 
 	<Buttons>
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidArrangeNow" priority="0x0100" type="Button">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
-		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
+		<!--<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />-->
 		<Strings>
 		  <ButtonText>Arrange Now</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.ArrangeNow</LocCanonicalName>
 		</Strings>
 	  </Button>
+		
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenConfig" priority="0x0200" type="Button">
-		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
-		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutConfigGroup" />
+		<!--<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />-->
 		<Strings>
-		  <ButtonText>Open Config</ButtonText>
+		  <ButtonText>Open Config file</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.OpenConfig</LocCanonicalName>
 		</Strings>
 	  </Button>
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenOptions" priority="0x0300" type="Button">
-		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
-		<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutConfigGroup" />
+		<!--<Icon guid="guidDebugWindowLayoutImages" id="bmpDebugWindowLayoutIcon" />-->
 		<Strings>
 		  <ButtonText>Options...</ButtonText>
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.Options</LocCanonicalName>
@@ -60,9 +65,11 @@
 	<GuidSymbol name="guidDebugWindowLayoutCmdSet" value="{C2D36C87-3563-4F88-BEC1-8F4154B79F47}">
 	  <IDSymbol name="DebugWindowLayoutSubMenu" value="0x1015" />
 	  <IDSymbol name="DebugWindowLayoutGroup" value="0x1020" />
+	  <IDSymbol name="DebugWindowLayoutConfigGroup" value="0x1021" />
 	  <IDSymbol name="cmdidArrangeNow" value="0x0100" />
-	  <IDSymbol name="cmdidOpenConfig" value="0x0101" />
-	  <IDSymbol name="cmdidOpenOptions" value="0x0102" />
+	  <IDSymbol name="cmdidDelimiter" value="0x0101" />
+	  <IDSymbol name="cmdidOpenConfig" value="0x0102" />
+	  <IDSymbol name="cmdidOpenOptions" value="0x0103" />
 	</GuidSymbol>
 	<GuidSymbol name="guidDebugWindowLayoutImages" value="{3E605A88-E8DD-4E1A-9ED2-2478A5D7F6AD}">
 	  <IDSymbol name="bmpDebugWindowLayoutIcon" value="1" />
