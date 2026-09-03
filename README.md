@@ -8,6 +8,12 @@ A small in-process Visual Studio VSIX that automatically arranges windows belong
 
 It targets the stable Visual Studio 17.x SDK API surface. Visual Studio 2026 supports 17.x extension APIs and accepts a VSIX installation target with lower bound `17.0`, so the same extension can run in Visual Studio 2022 and Visual Studio 2026.
 
+
+![Screenshot](material/Screenshots/image__3.png)
+
+![Screenshot](material/Screenshots/image__4.png)
+
+
 ## Plugin functionality
 
 The **Debug Window Layout** plugin helps when debugging multiple processes in Visual Studio:
