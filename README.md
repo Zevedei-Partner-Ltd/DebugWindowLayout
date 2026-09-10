@@ -2,6 +2,9 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/Zevedei-Partner-Ltd/DebugWindowLayout)](https://github.com/Zevedei-Partner-Ltd/DebugWindowLayout/releases)
 [![Static Badge](https://img.shields.io/badge/Visual_Studio_Marketplace-Download-Green)](https://marketplace.visualstudio.com/items?itemName=ZevedeiPartnerLtd.debugwindowlayout)
+[![Static Badge](https://vsmarketplacebadges.dev/version/ZevedeiPartnerLtd.debugwindowlayout.svg)](https://marketplace.visualstudio.com/items?itemName=ZevedeiPartnerLtd.debugwindowlayout)
+[![Static Badge](https://vsmarketplacebadges.dev/installs/ZevedeiPartnerLtd.debugwindowlayout.svg)](https://marketplace.visualstudio.com/items?itemName=ZevedeiPartnerLtd.debugwindowlayout)
+[![Static Badge](https://vsmarketplacebadges.dev/rating/ZevedeiPartnerLtd.debugwindowlayout.svg)](https://marketplace.visualstudio.com/items?itemName=ZevedeiPartnerLtd.debugwindowlayout)
 
 
 A small in-process Visual Studio VSIX that automatically arranges windows belonging to processes currently being debugged.
