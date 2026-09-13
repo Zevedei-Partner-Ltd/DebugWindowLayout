@@ -27,13 +27,13 @@ namespace DebugWindowLayout
         public void ScheduleAutoArrange()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            StartArrangeLoop(requireAutoEnabled: true);
+            StartArrangeLoop(requireAutoEnabled: true, bringToFront: false);
         }
 
         public void ArrangeNow()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            StartArrangeLoop(requireAutoEnabled: false);
+            StartArrangeLoop(requireAutoEnabled: false, bringToFront: true);
         }
 
         public void OpenConfig()
@@ -67,7 +67,7 @@ namespace DebugWindowLayout
             }).FileAndForget("DebugWindowLayout/OpenConfig");
         }
 
-        private void StartArrangeLoop(bool requireAutoEnabled)
+        private void StartArrangeLoop(bool requireAutoEnabled, bool bringToFront)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -85,7 +85,7 @@ namespace DebugWindowLayout
                     do
                     {
                         _arrangeAgain = false;
-                        await ArrangeWithRetriesAsync(requireAutoEnabled);
+                        await ArrangeWithRetriesAsync(requireAutoEnabled, bringToFront);
                     }
                     while (_arrangeAgain);
                 }
@@ -100,7 +100,7 @@ namespace DebugWindowLayout
             }).FileAndForget("DebugWindowLayout/ArrangeLoop");
         }
 
-        private async Task ArrangeWithRetriesAsync(bool requireAutoEnabled)
+        private async Task ArrangeWithRetriesAsync(bool requireAutoEnabled, bool bringToFront)
         {
             var configPath = await GetConfigPathAsync();
             var config = LayoutConfig.LoadOrDefault(configPath);
@@ -116,7 +116,7 @@ namespace DebugWindowLayout
                 var processes = await GetDebuggedProcessesAsync();
                 if (processes.Count > 0)
                 {
-                    var foundCount = ArrangeOnce(processes, config);
+                    var foundCount = ArrangeOnce(processes, config, bringToFront);
 
                     if (foundCount > 0 && foundCount == lastFoundCount)
                         stableIterations++;
@@ -138,7 +138,7 @@ namespace DebugWindowLayout
             }
         }
 
-        private int ArrangeOnce(IReadOnlyList<DebugProcessInfo> processes, LayoutConfig config)
+        private int ArrangeOnce(IReadOnlyList<DebugProcessInfo> processes, LayoutConfig config, bool bringToFront)
         {
             var monitors = MonitorManager.GetMonitors();
             if (monitors.Count == 0)
@@ -146,16 +146,17 @@ namespace DebugWindowLayout
 
             var windows = WindowManager.EnumerateVisibleWindows();
             if (config.Rules != null && config.Rules.Count > 0)
-                return ArrangeRules(processes, windows, monitors, config);
+                return ArrangeRules(processes, windows, monitors, config, bringToFront);
 
-            return ArrangeAutoGrid(processes, windows, monitors, config);
+            return ArrangeAutoGrid(processes, windows, monitors, config, bringToFront);
         }
 
         private int ArrangeRules(
             IReadOnlyList<DebugProcessInfo> processes,
             IReadOnlyList<WindowInfo> windows,
             IReadOnlyList<MonitorInfo> monitors,
-            LayoutConfig config)
+            LayoutConfig config,
+            bool bringToFront)
         {
             var assigned = new HashSet<IntPtr>();
             var moved = 0;
@@ -171,7 +172,7 @@ namespace DebugWindowLayout
                 var normalized = rule.Bounds?.Clamp() ?? ZoneToBounds(rule.Zone);
                 var target = ToPixelBounds(area, normalized, config.Margin);
 
-                if (WindowManager.MoveWindow(window, target, config.RestoreBeforeMove))
+                if (WindowManager.MoveWindow(window, target, config.RestoreBeforeMove, bringToFront))
                 {
                     assigned.Add(window.Handle);
                     moved++;
@@ -185,7 +186,8 @@ namespace DebugWindowLayout
             IReadOnlyList<DebugProcessInfo> processes,
             IReadOnlyList<WindowInfo> windows,
             IReadOnlyList<MonitorInfo> monitors,
-            LayoutConfig config)
+            LayoutConfig config,
+            bool bringToFront)
         {
             var debugWindows = WindowManager.FindForProcesses(processes, windows).ToList();
             if (debugWindows.Count == 0)
@@ -198,7 +200,7 @@ namespace DebugWindowLayout
             for (var i = 0; i < debugWindows.Count; i++)
             {
                 var target = ToPixelBounds(area, cells[i], config.Margin);
-                WindowManager.MoveWindow(debugWindows[i], target, config.RestoreBeforeMove);
+                WindowManager.MoveWindow(debugWindows[i], target, config.RestoreBeforeMove, bringToFront);
             }
 
             return debugWindows.Count;

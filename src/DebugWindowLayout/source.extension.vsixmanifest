@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="DebugWindowLayout.6f4f58a9-6ec7-46cf-9a39-59fd911e26db" Version="1.0.3" Language="en-US" Publisher="Zevedei &amp; Partner Ltd." />
+    <Identity Id="DebugWindowLayout.6f4f58a9-6ec7-46cf-9a39-59fd911e26db" Version="1.0.5" Language="en-US" Publisher="Zevedei &amp; Partner Ltd." />
     <DisplayName>Debug Window Layout</DisplayName>
     <Description xml:space="preserve">Automatically arranges windows of processes debugged by Visual Studio on configurable monitors and zones.</Description>
     <Icon>Resources\Icon_Generated.png</Icon>

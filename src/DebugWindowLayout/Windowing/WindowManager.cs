@@ -118,22 +118,63 @@ namespace DebugWindowLayout
             return found;
         }
 
-        public static bool MoveWindow(WindowInfo window, Rect bounds, bool restoreBeforeMove)
+        /// <summary>
+        /// Moves a window to the given bounds and optionally brings it to the foreground.
+        /// </summary>
+        public static bool MoveWindow(WindowInfo window, Rect bounds, bool restoreBeforeMove, bool bringToFront = false)
         {
             if (window == null || window.Handle == IntPtr.Zero)
                 return false;
 
-            if (restoreBeforeMove)
+            if (restoreBeforeMove || (bringToFront && NativeMethods.IsIconic(window.Handle)))
                 NativeMethods.ShowWindow(window.Handle, NativeMethods.SW_RESTORE);
 
-            return NativeMethods.SetWindowPos(
+            var flags = bringToFront
+                ? NativeMethods.SWP_SHOWWINDOW
+                : NativeMethods.SWP_NOZORDER | NativeMethods.SWP_NOACTIVATE | NativeMethods.SWP_SHOWWINDOW;
+
+            var moved = NativeMethods.SetWindowPos(
                 window.Handle,
-                IntPtr.Zero,
+                bringToFront ? NativeMethods.HWND_TOP : IntPtr.Zero,
                 bounds.Left,
                 bounds.Top,
                 Math.Max(100, bounds.Width),
                 Math.Max(80, bounds.Height),
-                NativeMethods.SWP_NOZORDER | NativeMethods.SWP_NOACTIVATE | NativeMethods.SWP_SHOWWINDOW);
+                flags);
+
+            if (moved && bringToFront)
+                BringToFront(window.Handle);
+
+            return moved;
+        }
+
+        /// <summary>
+        /// Activates a window, temporarily attaching to the foreground thread input so the
+        /// foreground change is allowed by Windows.
+        /// </summary>
+        public static void BringToFront(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero)
+                return;
+
+            var foreground = NativeMethods.GetForegroundWindow();
+            var foregroundThread = foreground == IntPtr.Zero
+                ? 0u
+                : NativeMethods.GetWindowThreadProcessId(foreground, out _);
+            var currentThread = NativeMethods.GetCurrentThreadId();
+            var attached = foregroundThread != 0 && foregroundThread != currentThread
+                && NativeMethods.AttachThreadInput(currentThread, foregroundThread, true);
+
+            try
+            {
+                NativeMethods.BringWindowToTop(handle);
+                NativeMethods.SetForegroundWindow(handle);
+            }
+            finally
+            {
+                if (attached)
+                    NativeMethods.AttachThreadInput(currentThread, foregroundThread, false);
+            }
         }
 
         private static bool TitleMatches(string title, string titleContains)
