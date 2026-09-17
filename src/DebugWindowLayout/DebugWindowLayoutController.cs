@@ -67,6 +67,26 @@ namespace DebugWindowLayout
             }).FileAndForget("DebugWindowLayout/OpenConfig");
         }
 
+        /// <summary>
+        /// Adds rules for all currently debugged program windows to the existing config
+        /// without touching rules that are already present.
+        /// </summary>
+        public void CaptureWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            _package.JoinableTaskFactory.RunAsync(async delegate
+            {
+                try
+                {
+                    await CaptureWindowsAsync();
+                }
+                catch (Exception ex)
+                {
+                    await ShowMessageAsync("Could not capture debug windows:\n" + ex.Message);
+                }
+            }).FileAndForget("DebugWindowLayout/CaptureWindows");
+        }
+
         private void StartArrangeLoop(bool requireAutoEnabled, bool bringToFront)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -189,7 +209,9 @@ namespace DebugWindowLayout
             LayoutConfig config,
             bool bringToFront)
         {
-            var debugWindows = WindowManager.FindForProcesses(processes, windows).ToList();
+            var debugWindows = WindowManager.MatchWindowsToProcesses(processes, windows)
+                .Select(m => m.Window)
+                .ToList();
             if (debugWindows.Count == 0)
                 return 0;
 
@@ -277,6 +299,123 @@ namespace DebugWindowLayout
             }
 
             return config;
+        }
+
+        private async Task CaptureWindowsAsync()
+        {
+            var configPath = await GetConfigPathAsync();
+            if (configPath == null)
+            {
+                await ShowMessageAsync("Open a solution first.");
+                return;
+            }
+
+            var processes = await GetDebuggedProcessesAsync();
+            if (processes.Count == 0)
+            {
+                await ShowMessageAsync("No debugged processes found. Start debugging first, then capture again.");
+                return;
+            }
+
+            await _package.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var monitors = MonitorManager.GetMonitors();
+            if (monitors.Count == 0)
+            {
+                await ShowMessageAsync("No monitors could be enumerated.");
+                return;
+            }
+
+            var windows = WindowManager.EnumerateVisibleWindows();
+            var config = LayoutConfig.LoadOrDefault(configPath);
+
+            // Windows already matched by existing rules keep their rule and are never duplicated.
+            var covered = new HashSet<IntPtr>();
+            foreach (var rule in config.Rules)
+            {
+                var matched = WindowManager.FindForRule(rule, processes, windows, covered);
+                if (matched != null)
+                    covered.Add(matched.Handle);
+            }
+
+            var matches = WindowManager.MatchWindowsToProcesses(processes, windows, covered);
+
+            var added = new List<string>();
+            foreach (var match in matches)
+            {
+                var rule = BuildRuleFromWindow(match, config, monitors);
+                if (rule != null)
+                {
+                    config.Rules.Add(rule);
+                    added.Add(match.Process.Name);
+                }
+            }
+
+            if (added.Count == 0)
+            {
+                await ShowMessageAsync(config.Rules.Count > 0
+                    ? "Every debugged window is already covered by the existing rules. Nothing was changed."
+                    : "No visible windows of the debugged processes were found.");
+                return;
+            }
+
+            config.Save(configPath);
+            RefreshOptionsPage();
+            await ShowMessageAsync(
+                "Added " + added.Count + " rule(s): " + string.Join(", ", added.Distinct(StringComparer.OrdinalIgnoreCase)) + ".\n" +
+                "Existing rules were kept unchanged.");
+        }
+
+        /// <summary>
+        /// Reloads the cached options page instance (if any) so it immediately shows the captured rules.
+        /// Must be called on the UI thread.
+        /// </summary>
+        private void RefreshOptionsPage()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (_package.GetDialogPage(typeof(DebugWindowLayoutOptionsPage)) is DebugWindowLayoutOptionsPage page)
+                page.LoadSettingsFromStorage();
+        }
+
+        private static LayoutRule BuildRuleFromWindow(
+            ProcessWindowMatch match,
+            LayoutConfig config,
+            IReadOnlyList<MonitorInfo> monitors)
+        {
+            var window = match.Window;
+            if (!NativeMethods.GetWindowRect(window.Handle, out var nativeRect))
+                return null;
+
+            var rect = Rect.FromNative(nativeRect);
+            var monitor = MonitorManager.GetMonitorForWindow(monitors, window.Handle)
+                ?? MonitorManager.SelectMonitor(monitors, config.TargetMonitor);
+            if (monitor == null)
+                return null;
+
+            var area = config.UseWorkingArea ? monitor.WorkingArea : monitor.Bounds;
+            if (area.Width <= 0 || area.Height <= 0)
+                return null;
+
+            // Compensate the configured margin so re-applying the rule reproduces the captured rectangle.
+            var bounds = new NormalizedBounds
+            {
+                X = (double)(rect.Left - area.Left - config.Margin) / area.Width,
+                Y = (double)(rect.Top - area.Top - config.Margin) / area.Height,
+                Width = (double)(rect.Width + 2 * config.Margin) / area.Width,
+                Height = (double)(rect.Height + 2 * config.Margin) / area.Height
+            }.Clamp();
+
+            var rule = new LayoutRule
+            {
+                Process = match.Process.Name,
+                Bounds = bounds
+            };
+
+            // Only pin the monitor explicitly when it differs from the global target monitor.
+            if (monitor.DisplayNumber.HasValue && monitor.DisplayNumber.Value != config.TargetMonitor)
+                rule.Monitor = monitor.DisplayNumber.Value;
+
+            return rule;
         }
 
         private static List<NormalizedBounds> BuildGrid(int count)

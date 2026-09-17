@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DebugWindowLayout
@@ -89,28 +88,32 @@ namespace DebugWindowLayout
             return null;
         }
 
-        public static IReadOnlyList<WindowInfo> FindForProcesses(
+        public static IReadOnlyList<ProcessWindowMatch> MatchWindowsToProcesses(
             IReadOnlyList<DebugProcessInfo> debugProcesses,
-            IReadOnlyList<WindowInfo> windows)
+            IReadOnlyList<WindowInfo> windows,
+            ISet<IntPtr> excluded = null)
         {
-            var found = new List<WindowInfo>();
+            var found = new List<ProcessWindowMatch>();
             var assigned = new HashSet<IntPtr>();
 
             foreach (var process in debugProcesses)
             {
                 var direct = windows.FirstOrDefault(w =>
-                    !assigned.Contains(w.Handle) && w.ProcessId == process.ProcessId);
+                    !assigned.Contains(w.Handle) &&
+                    (excluded == null || !excluded.Contains(w.Handle)) &&
+                    w.ProcessId == process.ProcessId);
 
                 if (direct == null)
                 {
                     direct = windows.FirstOrDefault(w =>
                         !assigned.Contains(w.Handle) &&
+                        (excluded == null || !excluded.Contains(w.Handle)) &&
                         w.Title?.IndexOf(process.Name, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
 
                 if (direct != null)
                 {
-                    found.Add(direct);
+                    found.Add(new ProcessWindowMatch { Process = process, Window = direct });
                     assigned.Add(direct.Handle);
                 }
             }
@@ -209,5 +212,11 @@ namespace DebugWindowLayout
         public int ProcessId { get; set; }
         public string Title { get; set; }
         public string ClassName { get; set; }
+    }
+
+    internal sealed class ProcessWindowMatch
+    {
+        public DebugProcessInfo Process { get; set; }
+        public WindowInfo Window { get; set; }
     }
 }

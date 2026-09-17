@@ -36,6 +36,14 @@
 		  <LocCanonicalName>.Extensions.DebugWindowLayout.ArrangeNow</LocCanonicalName>
 		</Strings>
 	  </Button>
+
+	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidCaptureWindows" priority="0x0150" type="Button">
+		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutGroup" />
+		<Strings>
+		  <ButtonText>Capture Active Windows</ButtonText>
+		  <LocCanonicalName>.Extensions.DebugWindowLayout.CaptureActiveWindows</LocCanonicalName>
+		</Strings>
+	  </Button>
 		
 	  <Button guid="guidDebugWindowLayoutCmdSet" id="cmdidOpenConfig" priority="0x0200" type="Button">
 		<Parent guid="guidDebugWindowLayoutCmdSet" id="DebugWindowLayoutConfigGroup" />
@@ -67,6 +75,7 @@
 	  <IDSymbol name="DebugWindowLayoutGroup" value="0x1020" />
 	  <IDSymbol name="DebugWindowLayoutConfigGroup" value="0x1021" />
 	  <IDSymbol name="cmdidArrangeNow" value="0x0100" />
+	  <IDSymbol name="cmdidCaptureWindows" value="0x0103" />
 	  <IDSymbol name="cmdidOpenConfig" value="0x0101" />
 	  <IDSymbol name="cmdidOpenOptions" value="0x0102" />
 	</GuidSymbol>

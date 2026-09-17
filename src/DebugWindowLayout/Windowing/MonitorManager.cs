@@ -55,6 +55,18 @@ namespace DebugWindowLayout
             return monitors.LastOrDefault() ?? monitors[0];
         }
 
+        /// <summary>
+        /// Returns the monitor the given window currently lives on (nearest one when it straddles edges).
+        /// </summary>
+        public static MonitorInfo GetMonitorForWindow(IReadOnlyList<MonitorInfo> monitors, IntPtr windowHandle)
+        {
+            if (monitors == null || monitors.Count == 0)
+                return null;
+
+            var hMonitor = NativeMethods.MonitorFromWindow(windowHandle, NativeMethods.MONITOR_DEFAULTTONEAREST);
+            return monitors.FirstOrDefault(m => m.Handle == hMonitor) ?? monitors[0];
+        }
+
         private static int? ParseDisplayNumber(string deviceName)
         {
             var match = Regex.Match(deviceName ?? string.Empty, @"DISPLAY(?<n>\d+)$", RegexOptions.IgnoreCase);

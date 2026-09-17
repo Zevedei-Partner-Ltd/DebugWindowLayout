@@ -67,9 +67,10 @@ In the experimental instance, open your normal multi-project solution and start 
 
 ## Usage
 
-The extension adds two commands in a dedicated submenu under **Extensions**:
+The extension adds these commands in a dedicated submenu under **Extensions**:
 
 - `Debug Window Layout: Arrange Now`
+- `Debug Window Layout: Capture Active Windows`
 - `Debug Window Layout: Open Config`
 
 When debugging starts, the extension automatically tries to arrange the visible windows.
@@ -87,6 +88,14 @@ Start your four processes, then choose:
 If the config file doesn't exist yet, it is generated from the processes currently being debugged. The generated rules are assigned to a grid automatically.
 
 `Open Config` opens `.vsdebuglayout.json` directly inside Visual Studio. The file content is stored in formatted (beautified) JSON for easier editing.
+
+### Capture the current window layout
+
+Arrange the debug windows manually the way you want them, then choose:
+
+`Extensions > Debug Window Layout > Capture Active Windows`
+
+This records the current position and size of every visible window of the debugged processes as a new rule (including the monitor it sits on) and appends those rules to `.vsdebuglayout.json`. Existing rules are never modified or removed — windows that are already covered by a rule are skipped, so capturing twice does not create duplicates.
 
 ## Recommended console setup
 

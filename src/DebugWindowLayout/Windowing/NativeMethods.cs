@@ -11,6 +11,7 @@ namespace DebugWindowLayout
         public const uint SWP_NOZORDER = 0x0004;
         public const uint SWP_NOACTIVATE = 0x0010;
         public const uint SWP_SHOWWINDOW = 0x0040;
+        public const uint MONITOR_DEFAULTTONEAREST = 2;
         public static readonly IntPtr HWND_TOP = IntPtr.Zero;
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
@@ -73,6 +74,13 @@ namespace DebugWindowLayout
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT

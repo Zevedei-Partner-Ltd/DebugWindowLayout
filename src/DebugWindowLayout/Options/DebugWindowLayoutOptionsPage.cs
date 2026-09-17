@@ -66,7 +66,7 @@ namespace DebugWindowLayout
         [DisplayName("Configuration file")]
         [Description("Path to the JSON configuration stored per solution.")]
         [ReadOnly(true)]
-        public string ConfigFilePath { get; private set; }
+        public string ConfigFilePath { get; private set; }        
 
         public override void LoadSettingsFromStorage()
         {
@@ -76,6 +76,15 @@ namespace DebugWindowLayout
             var dte = GetDte();
             ConfigFilePath = LayoutConfigStorage.GetConfigPath(dte);
             Apply(LayoutConfigStorage.Load(dte));
+        }
+
+        protected override void OnActivate(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnActivate(e);
+
+            // The JSON file is the source of truth; reload it whenever the page opens so
+            // changes from "Capture Active Windows" or manual edits show up immediately.
+            LoadSettingsFromStorage();
         }
 
         public override void SaveSettingsToStorage()

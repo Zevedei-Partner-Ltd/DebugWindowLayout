@@ -24,6 +24,7 @@ namespace DebugWindowLayout
         private const int ArrangeNowCommandId = 0x0100;
         private const int OpenConfigCommandId = 0x0101;
         private const int OpenOptionsCommandId = 0x0102;
+        private const int CaptureWindowsCommandId = 0x0103;
 
         private DTE2 _dte;
         private DebuggerEvents _debuggerEvents;
@@ -47,6 +48,10 @@ namespace DebugWindowLayout
                 commandService.AddCommand(new MenuCommand(
                     (s, e) => _controller.ArrangeNow(),
                     new CommandID(CommandSet, ArrangeNowCommandId)));
+
+                commandService.AddCommand(new MenuCommand(
+                    (s, e) => _controller.CaptureWindows(),
+                    new CommandID(CommandSet, CaptureWindowsCommandId)));
 
                 commandService.AddCommand(new MenuCommand(
                     (s, e) => _controller.OpenConfig(),
